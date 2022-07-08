@@ -1,0 +1,43 @@
+1. Open Eclipse
+2. Click File ->New ->JavaProject
+	2a. Give Project Name 
+3. Adding Java Class
+	3a. Select src folder under project created
+	3b. Right click ->New ->class
+	3c. Give suitable class name (against textbox Name:)
+	3d. Check public static void main(String [] args) checkbox
+	3e. Finish
+4. Adding Hadoop jar files
+	4a. Select Project and right Click
+	4b. Select Build Path -> Configure Build Path
+	4c. Select Libraries Tab and press "Add External Jars"
+	4d. select hadoop-mapreduce-client-core-3.2.1.jar (from path /opt/hadoop/share/hadoop/mapreduce) and press Open button
+	4e. Press "Add External JARs" and select hadoop-common-3.2.1.jar (from path /opt/hadoop/share/hadoop/common) and press Open button
+	4f. Press "Apply and Close"
+5. Creating Jar File
+	5a. Select Project and right click
+	5b. Select Export
+	5c. Under Java select JAR file
+	5d. Under "Select the export destination"
+		make sure that JAR file path is inside eclipse-workspace
+	5e. Accept default selections till you hit Finish
+
+
+6. Running MapReduce job
+	
+Here we assume that input file is already present in HDFS direction
+
+haddop jar jar_file_name.jar *package_name.class_name hadfs_path_of_input_file hdfs_directory_where_output_to_be_written
+
+Note: * If package is default-package in eclipse, only give class name
+	hdfs directory should not be present before running job.
+
+
+
+
+
+
+
+
+
+
