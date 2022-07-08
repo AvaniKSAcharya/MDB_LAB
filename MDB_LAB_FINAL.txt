@@ -1,0 +1,516 @@
+--------------------------------------------------------SET 1----------------------------------------------
+
+1. Create branch table and Declare branch_name as the primary key for branch, and 
+branch_city should not take NULL values.
+
+--> Create table branch( 
+Branch_name NOT NULL PRIMARY KEY, 
+Branch_city VARCHAR(255) NOT NULL, 
+Balance VARCHAR(255) NOT NULL)
+
+2. Add a new tuple to account with values 'A-9732', 'Perryridge', 1200.
+
+-->  Insert into account values(‘A-9372’ , ‘Perryridge’, 1200)
+
+3. Use The alter table command to add new attribute PhoneNumber 
+to an existing relation customer 
+
+--> ALTER TABLE Customer ADD Phone Number VARCHAR(20); 
+
+4. Use The drop table command to remove the new attribute column       
+PhoneNumber from relation customer 
+
+--> ALTER TABLE Customer DROP Column Phone Number; 
+
+5. Find the names of all branches in the loan relation and remove duplicates. 
+
+--> Select distinct branch_name From loan;
+
+----------------------------------------------------------SET 2-----------------------------------------------
+
+6. 6. Find the names of all branches in the loan relation and do not remove duplicates. 
+
+--> Select branch_name From loan 
+
+ 
+
+7. Display all the contents of the table without mentioning names of the attributes 
+
+--> Select customer_name as ' ',Loan_No as ' ' from dbo.borrower_relation;
+
+
+8. Multiply amount attribute with value 100 for all the loan numbers in the loan 
+
+--> Select loan-number, branch-name, amount * 100 from loan 
+
+ 
+
+9. Find all loans over $1200 
+
+--> Select amount  from loan Where amount > 1200 
+
+ 
+
+10. Find the loan number for each loan of an amount > $1200 
+
+--> select loan_number from loan  where amount > 1200  
+
+------------------------------------------------------- SET 3------------------------------------------------------------
+
+11. Provide as a gift for all loan customers of the Perryridge branch, a $200 savings account. 
+Let the loan number serve as the account number for the new savings account 
+
+-->  insert into account  
+	select loan-number, branch-name, 200  
+	from loan where branch-name = ‘Perryridge’  
+
+-->  insert into depositor
+	select customer-name, loan-number from loan, borrower 
+	where branch-name = ‘Perryridge’ and loan.account-number=borrower.account-number \
+
+
+12. Increase all accounts with balances over $10,000 by 6%, all other accounts receive 5%. 
+
+Write two update statements: 
+
+--> update account set balance = balance * 1.06  
+    where balance > 10000  
+
+--> update account set balance = balance * 1.05  
+    where balance <= 10000 
+
+ 
+
+13. Increase all accounts with balances over $10,000 by 6%, all other accounts receive 5%. 
+
+--> update account set balance = balance _ 1.06  
+	where balance > 10000  
+
+--> update account set balance = balance _ 1.05  
+	where balance >= 10000 
+
+--> update account
+	set balance = case
+	when balance <= 10000 then balance *1.05
+	else balance * 1.06
+	end
+ 
+
+14. Find all customers who have at least two accounts at the Perryridge branch. 
+
+--> select distinct T.customer-name  
+	from depositor T  
+	where not unique 
+	( select R.customer-name  
+	from account, depositor as R where T.customer-name = R.customer-name  
+	and R.account-number = account.account-number  
+	and account.branch-name = ‘Perryridge’) 
+
+15. Write the SQL queries for the operations below using the relations loan and borrower given below?
+
+--> Select * from loan Natural join borrower 
+--> loan natural right outer join borrower
+--> loan inner join borrower on
+	loan.loan_number = borrower.loan_number
+--> loan left outer join borrower on
+	loan.loan_number = borrower.loan_number
+--> Select branch-name, amount 
+	From loan l1 
+	Right join borrower b1 
+	On l1.loan-number = b1.loan-number 
+-->	Select branch-name, amount 
+     From loan l1 
+	left join borrower b1 
+	On l1.loan-number = b1.loan-number
+--------------------------------------------------------- ADDITIONAL ------------------------------------------------------------ 
+
+16. To find all loan number for loans made at the Perryridge branch with 
+loan amounts greater than $1200.
+
+-->
+
+select loan_number
+from loan
+where branch_name = 'Perryridge' and amount > 1200
+
+17. Find the name, loan number and loan amount of all customers 
+having a loan at the Perryridge branch.
+
+-->
+
+select customer_name, borrower.loan_number, amount
+from borrower, loan
+where borrower.loan_number = loan.loan_number and
+branch_name = 'Perryridge'
+
+18. Find the name, loan number and loan amount of all customers; 
+rename the column name loan_number as loan_id.
+
+-->
+
+select customer_name, borrower.loan_number as loan_id, amount
+from borrower, loan
+where borrower.loan_number = loan.loan_number
+
+19. Find the customer names and their loan numbers and amount for all 
+customers having a loan at some branch.
+
+-->
+
+select customer_name, T.loan_number, S.amount
+from borrower as T, loan as S
+where T.loan_number = S.loan_number
+
+20. Find the names of all branches that have greater assets than 
+some branch located in Brooklyn.
+
+-->
+
+select distinct T.branch_name
+from branch as T, branch as S
+where T.assets > S.assets and S.branch_city = 'Brooklyn'
+
+21. Find the names of all customers whose street includes the substring 
+“Main”.
+
+-->
+
+select customer_name
+from customer
+where customer_street like '% Main%'
+
+22. List in alphabetic order the names of all customers having a loan in 
+Perryridge branch
+
+-->
+
+select distinct customer_name
+from borrower, loan
+where borrower loan_number = loan.loan_number and
+branch_name = 'Perryridge' 
+order by customer_name
+
+23. Find all customers who have a loan, an account, or both:
+
+(select customer_name from depositor)
+union
+(select customer_name from borrower)
+
+
+24. Find all customers who have both a loan and an account
+
+(select customer_name from depositor)
+intersect
+(select customer_name from borrower)
+
+
+25. Find all customers who have an account but no loan.
+
+
+(select customer_name from depositor)
+except
+(select customer_name from borrower)
+
+26. Find the average account balance at the Perryridge branch.
+
+select avg (balance)
+from account
+where branch_name = 'Perryridge' 
+
+27. Find the number of depositors in the bank.
+
+select count (*)
+from customer
+
+28. Find the number of tuples in the customer relation.
+
+select count (distinct customer_name)
+from depositor
+
+29. Find the number of depositors for each branch.
+
+select branch_name, count (distinct customer_name)
+from depositor, account
+where depositor.account_number = account.account_number
+group by branch_name
+
+30. Find the names of all branches where the average account balance is 
+more than $1,200.
+
+select branch_name, avg (balance)
+from account
+group by branch_name
+having avg (balance) > 1200
+
+----------------------------------------------------HADOOP - STUDENT CMD-------------------------------------------------------------------------
+
+import java.io.IOException;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+public class studentDetails2 {
+    
+    public static class testMap_institute extends Mapper<LongWritable,Text, Text, IntWritable> {
+        public void map(LongWritable key, Text values, Context context) throws IOException, InterruptedException{
+            String line = values.toString();
+            String[] insti = line.split(" ");
+            //String insti = line.substring(0,3);
+            String par = context.getConfiguration().get("INSTITUTE");
+            if(insti[1].equals(par))
+            {
+            context.write(values,new IntWritable(1));
+            }
+    }}
+  
+    public static class testMap_program extends Mapper<LongWritable,Text, Text, IntWritable> {
+        public void map(LongWritable key, Text values, Context context) throws IOException, InterruptedException{
+            String line = values.toString();
+            String[] program = line.split(" ");
+            String par = context.getConfiguration().get("PROGRAM");
+            if(program[2].equals(par)){
+            context.write(new Text(program[2]),new IntWritable(1));
+            }
+    }}
+   
+    public static class testMap_gender extends Mapper<LongWritable,Text, Text, IntWritable> {
+        public void map(LongWritable key, Text values, Context context) throws IOException, InterruptedException{
+            String line = values.toString();
+            String[] gender = line.split(" ");
+            String par = context.getConfiguration().get("GENDER");
+            if(gender[3].equals(par)){
+            context.write(new Text(gender[3]),new IntWritable(1));
+            }
+    }}
+    public static class testMap_instigender extends Mapper<LongWritable,Text, Text, IntWritable> {
+        public void map(LongWritable key, Text values, Context context) throws IOException, InterruptedException{
+            String line = values.toString();
+            String[] insti = line.split(" ");
+            String par = context.getConfiguration().get("INSTITUTE");
+            if(insti[1].equals(par)){
+            context.write(new Text(insti[3]),new IntWritable(1));
+            }
+    }}
+    public static class testReduce extends Reducer<Text,IntWritable,Text,IntWritable> {
+        public void reduce(Text key, Iterable<IntWritable> values,Context context) throws IOException, InterruptedException{
+        	int totalCount = 0;
+			for(IntWritable x: values) {
+				totalCount += x.get();
+			}
+			context.write(key, new IntWritable(totalCount));
+        }
+        
+    }
+    public static void main(String[] args) throws Exception {
+        // TODO Auto-generated method stub
+        Configuration conf = new Configuration();
+        conf.set("INSTITUTE", args[5]);
+        Job job = Job.getInstance(conf,"student_institute");
+        job.setJarByClass(studentDetails2.class);
+        job.setMapperClass(testMap_institute.class);
+        job.setReducerClass(testReduce.class);
+        
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
+        
+        FileInputFormat.addInputPath(job,new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+        
+        job.waitForCompletion(true);
+        
+        Configuration conf1 = new Configuration();
+        conf1.set("PROGRAM", args[5]);
+        Job job1 = Job.getInstance(conf1,"student_program");
+        job1.setJarByClass(studentDetails2.class);
+        job1.setMapperClass(testMap_program.class);
+        job1.setReducerClass(testReduce.class);
+        
+        job1.setOutputKeyClass(Text.class);
+        job1.setOutputValueClass(IntWritable.class);
+        
+        FileInputFormat.addInputPath(job1,new Path(args[0]));
+        FileOutputFormat.setOutputPath(job1, new Path(args[2]));
+        
+        job1.waitForCompletion(true);
+        
+        Configuration conf2 = new Configuration();
+        conf2.set("GENDER", args[5]);
+        Job job2 = Job.getInstance(conf2,"student_gender");
+        job2.setJarByClass(studentDetails2.class);
+        job2.setMapperClass(testMap_gender.class);
+        job2.setReducerClass(testReduce.class);
+        
+        job2.setOutputKeyClass(Text.class);
+        job2.setOutputValueClass(IntWritable.class);
+        
+        FileInputFormat.addInputPath(job2,new Path(args[0]));
+        FileOutputFormat.setOutputPath(job2, new Path(args[3]));
+        
+        job2.waitForCompletion(true);
+        Configuration conf3 = new Configuration();
+        conf3.set("INSTITUTE", args[5]);
+        Job job3 = Job.getInstance(conf3,"student_instigender");
+        job3.setJarByClass(studentDetails2.class);
+        job3.setMapperClass(testMap_instigender.class);
+        job3.setReducerClass(testReduce.class);
+        
+        job3.setOutputKeyClass(Text.class);
+        job3.setOutputValueClass(IntWritable.class);
+        
+        FileInputFormat.addInputPath(job3,new Path(args[0]));
+        FileOutputFormat.setOutputPath(job3, new Path(args[4]));
+        
+        job3.waitForCompletion(true);
+        System.exit(job3.waitForCompletion(true)?0:1);
+        
+    }
+}
+
+
+
+------------------------------------------------------------HADOOP - TEMPERATURE-----------------------------------------------------------------
+
+
+
+import java.io.IOException;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.FloatWritable;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.Mapper.Context;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+public class cityTemp {
+		
+	public static class Mapper_temp extends Mapper<LongWritable,Text,Text,FloatWritable>
+	{
+		public void map(LongWritable key, Text values,Context context) throws IOException,InterruptedException
+		{
+			String line = values.toString();
+			String entry[] = line.split(" ");
+			
+			
+			context.write(new Text(entry[2]),new FloatWritable(Float.parseFloat(entry[1])));
+		
+		}
+	}
+	public static class Mapper_city extends Mapper<LongWritable,Text,Text,IntWritable>
+	{
+		
+		public void map(LongWritable key, Text values,Context context) throws IOException,InterruptedException
+		{
+			String line = values.toString();
+			String entry[] = line.split(" ");
+			
+			
+			context.write(new Text(entry[2]),new IntWritable(1));
+		
+		}
+	}
+	public static class Mapper_tempB extends Mapper<LongWritable,Text,Text,FloatWritable>
+	{
+		public void map(LongWritable key, Text values,Context context) throws IOException,InterruptedException
+		{
+			String line = values.toString();
+			String entry[] = line.split(" ");
+			
+			if(entry[2].equals("Bangalore")) {
+			
+			context.write(new Text(entry[2]),new FloatWritable(Float.parseFloat(entry[1])));
+			}
+		
+		}
+	}
+	
+	public static class testReducer_1 extends Reducer<Text,FloatWritable,Text,FloatWritable>
+	{
+		public void reduce(Text key, Iterable <FloatWritable> values,Context context) throws IOException,InterruptedException
+		{
+			float Max_temp = 0,Min_temp = 999;
+			
+			for(FloatWritable x:values) {
+				
+				if(Max_temp < x.get()) {
+					Max_temp = x.get();
+				}
+				if(Min_temp > x.get()) {
+					Min_temp = x.get();
+				}
+								
+			}
+			context.write(key, new FloatWritable(Max_temp));
+			context.write(key, new FloatWritable(Min_temp));
+		}
+			
+	}
+	public static class testReducer_2 extends Reducer<Text,IntWritable,Text,IntWritable>
+	{
+		public void reduce(Text key, Iterable <IntWritable> values,Context context) throws IOException,InterruptedException
+		{
+			int total_count = 0;
+			for(IntWritable x:values) {
+				total_count +=x.get();
+			}
+			context.write(key, new IntWritable(total_count));
+		}
+			
+	}
+	
+
+	public static void main(String[] args) throws Exception {
+		// TODO Auto-generated method stub
+		Configuration conf = new Configuration();
+		//conf.set("Institute", args[5]);
+		Job job1 = Job.getInstance(conf,"city-count1");
+		job1.setJarByClass(cityTemp.class);
+		job1.setMapperClass(Mapper_temp.class);
+		job1.setReducerClass(testReducer_1.class);
+		job1.setOutputKeyClass(Text.class);
+		job1.setOutputValueClass(FloatWritable.class);
+		
+		FileInputFormat.addInputPath(job1,new Path(args[0]));		
+		FileOutputFormat.setOutputPath(job1,new Path(args[1]));
+		job1.waitForCompletion(true);
+		
+		Configuration conf2 = new Configuration();
+		Job job2 = Job.getInstance(conf2,"city-count2");
+		job2.setJarByClass(cityTemp.class);
+		job2.setMapperClass(Mapper_city.class);
+		job2.setReducerClass(testReducer_2.class);
+		job2.setOutputKeyClass(Text.class);
+		job2.setOutputValueClass(IntWritable.class);
+		
+		FileInputFormat.addInputPath(job2,new Path(args[0]));		
+		FileOutputFormat.setOutputPath(job2,new Path(args[2]));
+		job2.waitForCompletion(true);
+		
+		Configuration conf3 = new Configuration();
+		Job job3 = Job.getInstance(conf3,"city-count2");
+		job3.setJarByClass(cityTemp.class);
+		job3.setMapperClass(Mapper_tempB.class);
+		job3.setReducerClass(testReducer_1.class);
+		job3.setOutputKeyClass(Text.class);
+		job3.setOutputValueClass(FloatWritable.class);
+		
+		FileInputFormat.addInputPath(job3,new Path(args[0]));		
+		FileOutputFormat.setOutputPath(job3,new Path(args[3]));
+		job3.waitForCompletion(true);
+		
+		System.exit(job2.waitForCompletion(true)?0:1);
+	}
+
+}

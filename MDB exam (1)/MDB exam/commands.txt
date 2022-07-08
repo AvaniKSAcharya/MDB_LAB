@@ -1,0 +1,9 @@
+-->jps
+-->cd eclipse-workspace/
+create a file named mr that store text files.
+-->hdfs dfs -ls /mr
+-->hadoop jar jarfilename
+-->hadoop jar jarfilename classname /mr/input /mr/out
+-->hdfs dfs -ls /mr/out
+check the localhost
+ localhost--->browse files-->mr-->out
